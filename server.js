@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const hbs = require("express-handlebars");
 const path = require("path");
 const galleryRoutes = require("./routes/gallery");
-// const knex = require("./knex/knex.js");
+const methodOverride = require("method-override");
 app.use(express.static(path.join(__dirname, "/public")));
 
 app.engine(
@@ -21,6 +21,7 @@ app.use(
     extended: true
   })
 );
+app.use(methodOverride("_method"));
 app.use(bodyParser.json());
 app.use("/gallery", galleryRoutes);
 app.get("/", function(req, res) {

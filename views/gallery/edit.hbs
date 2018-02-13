@@ -1,0 +1,21 @@
+<h1>
+
+  Edit Gallery</h1>
+
+<body>
+
+  <form action="/gallery/{{id}}/edit?_method=PUT" method="POST">
+    <label for="Put-name">Author</label>
+    <input id="author" type="text" value="{{author}}" name="author">
+    <label for="Put-name">Link</label>
+    <input id="link" type="text" value="{{link}}" name="link">
+    <label for="Put-name">Description</label>
+    <input id="description" type="text" value="{{description}}" name="description">
+    <input type="submit" value="submit">
+  </form>
+
+  <form action="/gallery/{{id}}?_method=DELETE" method="POST">
+    <button type="submit">DELETE</button>
+
+
+    <a href="/gallery/{{collection.author}}">Back</a>

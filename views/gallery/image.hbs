@@ -1,0 +1,13 @@
+<div>
+
+  <a href="/gallery/{{id}}">{{author}}</a>
+  <li>
+    <img src="{{link}}" alt="error">
+  </li>
+  <div>{{description}}</div>
+  <a href="/gallery/{{id}}/edit">Edit</a>
+  <a href="/gallery">Back</a>
+  <form action="/gallery/{{id}}?_method=DELETE" method="POST">
+    <button type="submit">DELETE</button>
+  </form>
+</div>

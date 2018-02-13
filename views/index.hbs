@@ -1,10 +1,13 @@
 <h1>
 
+  <h1>Gallery</h1>
   {{#each collection}}
-  <h1>ALL Gallery</h1>
+  <label for="id">I.D.:{{id}} </label>
   <p>Author : {{author}}</p>
-  <p>Link : {{link}}</p>
-  <p>Description : {{description}}</p>
 
+  <img src="{{link}}" alt="error">
+
+  <p>Description : {{description}}</p>
+  <a href="/gallery/{{id}}/edit">Edit</a>
   {{/each}}
 </h1>

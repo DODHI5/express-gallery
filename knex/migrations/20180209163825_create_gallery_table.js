@@ -3,7 +3,7 @@ exports.up = function(knex, Promise) {
     table.increments();
     table.string("author").notNullable();
     table.string("link").notNullable();
-    table.string("description").notNullable();
+    table.text("description").notNullable(); // string limited 255
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
   });
