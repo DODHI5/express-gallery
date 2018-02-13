@@ -7,6 +7,9 @@ class Gallery extends bookshelf.Model {
   get hasTimestamps() {
     return true;
   }
+  users() {
+    return this.belongsTo(User);
+  }
 }
 
 module.exports = Gallery;
