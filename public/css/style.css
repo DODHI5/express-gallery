@@ -1,7 +1,7 @@
 html {
   background-color: whitesmoke;
-  flex-direction: column;
-  justify-content: center; }
+  justify-content: center;
+  width: 375px; }
 
 .leadPhoto {
   height: 200px;
@@ -26,6 +26,13 @@ h1.mainTitle {
   height: 100%; }
 
 img {
-  justify-content: center, space-around;
   height: 250px;
-  width: 550px; }
+  width: 550px;
+  text-align: center; }
+
+.galleryContainer {
+  flex-direction: column-reverse;
+  flex-wrap: wrap;
+  text-align: center;
+  justify-content: space-around;
+  display: inline-flex; }
