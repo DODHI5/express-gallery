@@ -1,28 +1,24 @@
 const express = require("express");
+const router = express.Router();
 const app = express();
 const PORT = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
-const hbs = require("express-handlebars");
-const path = require("path");
 const galleryRoutes = require("./routes/gallery");
-const userRoutes = require("./routes/users");
+const methodOverride = require("method-override");
+
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const methodOverride = require("method-override");
 const session = require("express-session");
-const bcrypt = require("bcrypt");
-const Redis = require("connect-redis")(session);
-const User = require("./knex/models/User");
 
-app.use(
-  session({
-    store: new Redis(),
-    secret: "whats in the box",
-    resave: false,
-    saveUninitialized: false
-  })
-);
-app.use(express.static(path.join(__dirname, "/public")));
+const Redis = require("connect-redis")(session);
+const salt = 12;
+const bcrypt = require("bcrypt");
+
+const hbs = require("express-handlebars");
+const path = require("path");
+const userRoutes = require("./routes/users");
+const { isAuthenticated: auth } = require("./routes/helper");
+const User = require("./knex/models/User");
 
 app.engine(
   ".hbs",
@@ -32,6 +28,9 @@ app.engine(
   })
 );
 app.set("view engine", ".hbs");
+
+app.use(express.static(path.join(__dirname, "/public")));
+
 // Boot Strap Server
 app.use(
   bodyParser.urlencoded({
@@ -41,11 +40,15 @@ app.use(
 app.use(bodyParser.json());
 
 app.use(methodOverride("_method"));
-app.use("/gallery", galleryRoutes);
-app.use("/user_id", userRoutes);
-app.get("/", function(req, res) {
-  res.render("./layouts/main");
-});
+
+app.use(
+  session({
+    store: new Redis(),
+    secret: "whats in the box",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
 // Passport middleware setup
 app.use(passport.initialize());
@@ -97,16 +100,24 @@ passport.use(
       });
   })
 );
-
+// app.get("/", function(req, res) {
+//   res.render("./layouts/main");
+// });
 app.get("/", (req, res) => {
-  res.send("smoke test");
+  res.redirect("gallery");
+});
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+app.get("register", (req, res) => {
+  res.render("register");
 });
 
 app.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/secret",
-    failureRedirect: "/"
+    successRedirect: "/gallery",
+    failureRedirect: "/user/login"
   })
 );
 
@@ -114,9 +125,11 @@ app.get("/logout", (req, res) => {
   req.logout();
   res.sendStatus(200);
 });
-
+app.get("/register", (req, res) => {
+  res.render("./register");
+});
 app.post("/register", (req, res) => {
-  bcrypt.genSalt(saltRounds, function(err, salt) {
+  bcrypt.genSalt(salt, function(err, salt) {
     if (err) {
       console.log(err);
     }
@@ -124,13 +137,12 @@ app.post("/register", (req, res) => {
       if (err) {
         console.log(err);
       }
-      new User({
-        username: req.body.username,
-        password: hash
-      })
+
+      let user = { password: hash, username: req.body.username };
+      return new User(user)
         .save()
         .then(user => {
-          console.log(user);
+          console.log("dhgshdfohifcoiehfsudfhosfhosfehfoehfehfhfoehfa", user);
           res.redirect("/");
         })
         .catch(err => {
@@ -141,19 +153,26 @@ app.post("/register", (req, res) => {
   });
 });
 
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.redirect("/");
-  }
-}
+// function isAuthenticated(req, res, next) {
+//   if (req.isAuthenticated()) {
+//     next();
+//   } else {
+//     res.redirect("/");
+//   }
+// }
 
-app.get("/secret", isAuthenticated, (req, res) => {
+app.get("/secret", auth, (req, res) => {
   console.log("req.user: ", req.user);
   console.log("req.user id", req.user.id);
   console.log("req.username", req.user.username);
   res.send("you found the secret!");
+});
+app.use("/gallery", galleryRoutes);
+app.use("/user", userRoutes);
+
+app.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/login");
 });
 
 app.listen(PORT, err => {

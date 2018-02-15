@@ -1,13 +1,20 @@
-<h1>
+{{header}}
+<div class="homeContainer">
+  <h1 class="mainTitle">_ARCHITEKT</h1>
+  <img class="leadPhoto" src="http://2.bp.blogspot.com/_Ut7-u5BlpeI/TRnr4is4AFI/AAAAAAAAJZ8/1hTWyMTpSUM/s1600/Fantastic+Norway++.+Sirene+restaurant+.+Oslo.jpg"
+    alt="error">
+  <br>
 
-  <h1>Gallery</h1>
-  {{#each collection}}
-  <label for="id">I.D.:{{id}} </label>
-  <p>Author : {{author}}</p>
+  <div class="galleryContainer">
+    {{#each collection}}
+    <img src="{{link}}" alt="error">
+    <label for="id">I.D.:{{id}} </label>
+    <br>
+    <p>Author : {{author}}</p>
+    <br>
+    <p>Description : {{description}}</p>
+    <br>
+    <a href="/gallery/{{id}}/edit">Edit</a>
+    {{/each}}</div>
 
-  <img src="{{link}}" alt="error">
-
-  <p>Description : {{description}}</p>
-  <a href="/gallery/{{id}}/edit">Edit</a>
-  {{/each}}
-</h1>
+</div>
